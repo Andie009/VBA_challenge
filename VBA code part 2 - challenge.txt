@@ -1,0 +1,57 @@
+'Challenges'
+Sub Challenge
+
+'Determine Greatest % Increase, Greatest % Decrease and Greatest Total Volume'
+
+'Define variables'
+Dim Greatest_Increase As Double
+Greatest_Increase = 0
+Dim Greatest_Decrease As Double
+Greatest_Decrease = 0
+Dim Greatest_Total_Volume As Double
+Greatest_Total_Volume = 0
+
+'Define last row of summary table'
+Last_Row = ws.Cells(Rows.Count, 11).End(xlUp).Row
+
+'Create column headers for summary table'
+ws.Range("O2").Value = "Greatest % Increase"
+ws.Range("O3").Value = "Greatest % Decrease"
+ws.Range("O4").Value = "Greatest Total Volume"
+ws.Range("P1").Value = "Ticker"
+ws.Range("Q1").Value = "Value"
+        
+'Loops'
+'Greatest % Increase'
+For i = 2 To Last_Row
+If ws.Range("K" & i).Value > ws.Range("Q2").Value Then
+ws.Range("Q2").Value = ws.Range("K" & i).Value
+ws.Range("P2").Value = ws.Range("I" & i).Value
+End If
+
+'Greatest % Decrease'
+If ws.Range("K" & i).Value < ws.Range("Q3").Value Then
+ws.Range("Q3").Value = ws.Range("K" & i).Value
+ws.Range("P3").Value = ws.Range("I" & i).Value
+End If
+
+'Greatest Total Volume'
+If ws.Range("L" & i).Value > ws.Range("Q4").Value Then
+ws.Range("Q4").Value = ws.Range("L" & i).Value
+ws.Range("P4").Value = ws.Range("I" & i).Value
+End If
+
+Next i
+
+'General formatting'
+
+'Format Value cells to % with two decimal places'
+ws.Range("Q2").NumberFormat = "0.00%"
+ws.Range("Q3").NumberFormat = "0.00%"
+            
+'Format Table Columns To Auto Fit
+ws.Columns("I:Q").AutoFit
+
+Next ws
+
+End Sub

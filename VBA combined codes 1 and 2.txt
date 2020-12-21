@@ -1,0 +1,139 @@
+Sub Multiple_year_stock_data():
+
+'Loop through all worksheets'
+For Each ws In Worksheets
+
+'Define variable types'
+Dim Ticker_Name As String
+Dim Last_Row As Long
+Dim Total_Ticker_Volume As Double
+Total_Ticker_Volume = 0
+Dim Summary_Table_Row As Long
+Summary_Table_Row = 2
+Dim Yearly_Open As Double
+Dim Yearly_Close As Double
+Dim Yearly_Change As Double
+Dim Previous_Amount As Long
+Previous_Amount = 2
+Dim Percent_Change As Double
+Dim Last_Row_Value As Long
+
+'Create column headers for summary table'
+ws.Range("I1").Value = "Ticker"
+ws.Range("J1").Value = "Yearly Change"
+ws.Range("K1").Value = "Percent Change"
+ws.Range("L1").Value = "Total Stock Volume"
+
+'Define the last row'
+Last_Row = ws.Cells(Rows.Count, 1).End(xlUp).Row
+For i = 2 To Last_Row
+
+'Ticker total volume calculation'
+Total_Ticker_Volume = Total_Ticker_Volume + ws.Cells(i, 7).Value
+'Check if within same ticker name or not'
+If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+'Define Ticker Name'
+ Ticker_Name = ws.Cells(i, 1).Value
+'Print The Ticker Name In The Summary Table'
+ ws.Range("I" & Summary_Table_Row).Value = Ticker_Name
+'Print The Ticker Total Amount To The Summary Table'
+ ws.Range("L" & Summary_Table_Row).Value = Total_Ticker_Volume
+'Reset Ticker Total'
+ Total_Ticker_Volume = 0
+
+
+'Define Yearly Open, Yearly Close and Yearly Change Name'
+Yearly_Open = ws.Range("C" & Previous_Amount)
+Yearly_Close = ws.Range("F" & i)
+Yearly_Change = Yearly_Close - Yearly_Open
+ws.Range("J" & Summary_Table_Row).Value = Yearly_Change
+
+'Calculate Percent Change'
+If Yearly_Open = 0 Then
+Percent_Change = 0
+Else
+Yearly_Open = ws.Range("C" & Previous_Amount)
+Percent_Change = Yearly_Change / Yearly_Open
+End If
+
+'Format Double To Include % Symbol And Two Decimal Places'
+ws.Range("K" & Summary_Table_Row).NumberFormat = "0.00%"
+ws.Range("K" & Summary_Table_Row).Value = Percent_Change
+
+'Highlight positive yearly change in green and negative yearly change in red'
+If ws.Range("J" & Summary_Table_Row).Value >= 0 Then
+ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
+Else
+ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
+End If
+            
+' Add One To The Summary Table Row
+Summary_Table_Row = Summary_Table_Row + 1
+Previous_Amount = i + 1
+End If
+
+Next i
+
+
+'Challenges'
+
+'Determine Greatest % Increase, Greatest % Decrease and Greatest Total Volume'
+
+'Define variables'
+Dim Greatest_Increase As Double
+Greatest_Increase = 0
+Dim Greatest_Decrease As Double
+Greatest_Decrease = 0
+Dim Greatest_Total_Volume As Double
+Greatest_Total_Volume = 0
+
+'Define last row of summary table'
+Last_Row = ws.Cells(Rows.Count, 11).End(xlUp).Row
+
+'Create column headers for summary table'
+ws.Range("O2").Value = "Greatest % Increase"
+ws.Range("O3").Value = "Greatest % Decrease"
+ws.Range("O4").Value = "Greatest Total Volume"
+ws.Range("P1").Value = "Ticker"
+ws.Range("Q1").Value = "Value"
+        
+'Loops'
+'Greatest % Increase'
+For i = 2 To Last_Row
+If ws.Range("K" & i).Value > ws.Range("Q2").Value Then
+ws.Range("Q2").Value = ws.Range("K" & i).Value
+ws.Range("P2").Value = ws.Range("I" & i).Value
+End If
+
+'Greatest % Decrease'
+If ws.Range("K" & i).Value < ws.Range("Q3").Value Then
+ws.Range("Q3").Value = ws.Range("K" & i).Value
+ws.Range("P3").Value = ws.Range("I" & i).Value
+End If
+
+'Greatest Total Volume'
+If ws.Range("L" & i).Value > ws.Range("Q4").Value Then
+ws.Range("Q4").Value = ws.Range("L" & i).Value
+ws.Range("P4").Value = ws.Range("I" & i).Value
+End If
+
+Next i
+
+'General formatting'
+
+'Format Value cells to % with two decimal places'
+ws.Range("Q2").NumberFormat = "0.00%"
+ws.Range("Q3").NumberFormat = "0.00%"
+            
+'Format Table Columns To Auto Fit'
+ws.Columns("I:Q").AutoFit
+
+Next ws
+
+End Sub
+
+
+Comments/References:
+bigbluey, https://github.com/bigbluey/The-VBA-of-Wall-Street/blob/master/StockMarketAnalysis%20-%20VBA%20Script.Final.vbs
+PetraLee2019, https://github.com/PetraLee2019/The-VBA-of-Wall-Street/blob/master/Stock_Market_Analysis.vbs
+dbikindu, https://github.com/dbikindu/The-VBA-of-Wall-Street/blob/master/VBA%20script.bas
